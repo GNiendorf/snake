@@ -26,7 +26,7 @@ class SnakeEnv(gym.Env):
         self.snake = [head, head+body_dir]
         self.food = np.random.randint(0, self.size, size=2)
         #Prevent head from spawning in food.
-        while (self.food == head).all():
+        while (self.food == head).all() or any(np.array_equal(x, self.food) for x in self.snake):
             self.food = np.random.randint(0, self.size, size=2)
         self.frame = np.zeros((self.size, self.size, 3), dtype=np.uint8)
         
@@ -64,10 +64,7 @@ class SnakeEnv(gym.Env):
             reward = 1
             self.R += 1
         #Check if head is out of bounds or overlapped with body.
-        head_body = False
-        for piece in self.snake[1:]:
-            if (self.snake[0] == piece).all():
-                head_body = True
+        head_body = any(np.array_equal(x, self.snake[0]) for x in self.snake[1:])
         border = ((self.snake[0] - [self.size, self.size]) == 0).any()
         border2 = (self.snake[0] < 0).any()
         if border or border2 or head_body or self.l >= 1000:
