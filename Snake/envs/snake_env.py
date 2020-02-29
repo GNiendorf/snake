@@ -28,14 +28,14 @@ class SnakeEnv(gym.Env):
         #Prevent head from spawning in food.
         while (self.food == head).all():
             self.food = np.random.randint(0, self.size, size=2)
-        self.frame = np.zeros((self.size, self.size, 3))
+        self.frame = np.zeros((self.size, self.size, 3), dtype=np.uint8)
         
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
         
     def update_frame(self):
-        self.frame = np.zeros((self.size,self.size, 3))
+        self.frame = np.zeros((self.size,self.size, 3), dtype=np.uint8)
         for piece in self.snake:
             self.frame[piece[0], piece[1], 0] = 255
         self.frame[self.food[0], self.food[1], 1] = 255
