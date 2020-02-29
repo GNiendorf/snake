@@ -72,7 +72,7 @@ class SnakeEnv(gym.Env):
             reward = -1
             self.R -= 1
             done = True
-        elif self.l > 1000:
+        elif self.l >= 1000:
             self.reset()
             reward = 0
             done = True
@@ -81,6 +81,7 @@ class SnakeEnv(gym.Env):
         info = {'episode': {'episode': self.ep, 'r': self.R, 'l':self.l}}
         if done:
             self.R = 0
+            self.l = 0
             self.ep += 1
         return self.frame, reward, done, info
     
