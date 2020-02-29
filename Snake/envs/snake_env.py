@@ -6,9 +6,10 @@ import numpy as np
 class SnakeEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, size=10, spawn_border=3):
+    def __init__(self, size=10, spawn_border=3, horizon=500):
         self.size = size
         self.spawn_border = spawn_border
+        self.horizon = horizon
         self.num_envs = 1
         self.step_dir = [[-1,0],[1,0],[0,1],[0,-1]]
         self.l = 0
@@ -67,7 +68,7 @@ class SnakeEnv(gym.Env):
         head_body = np.any([np.array_equal(x, self.snake[0]) for x in self.snake[1:]])
         border = ((self.snake[0] - [self.size, self.size]) == 0).any()
         border2 = (self.snake[0] < 0).any()
-        if border or border2 or head_body or self.l >= 1000:
+        if border or border2 or head_body or self.l >= self.horizon:
             self.reset()
             done = True
         #re-draw the frame after action.
