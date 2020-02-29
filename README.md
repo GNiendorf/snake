@@ -1,4 +1,4 @@
 # snake
-Beginner Challenge from OpenAI Requests for Research.
+See: https://openai.com/blog/requests-for-research-2/
 
-https://openai.com/blog/requests-for-research-2/
+Solving the classic game of snake with OpenAI baseline's PPO implementation.
