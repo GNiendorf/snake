@@ -1,8 +1,9 @@
-import gym
-import Snake
-import tensorflow as tf
-from baselines.ppo2 import ppo2
 import os.path as osp
+
+import gym
+import tensorflow as tf
+from baselines import logger
+from baselines.ppo2 import ppo2
 from baselines.common.models import build_impala_cnn
 from baselines.common.vec_env import (
     VecExtractDictObs,
@@ -10,7 +11,8 @@ from baselines.common.vec_env import (
     VecFrameStack,
     VecNormalize
 )
-from baselines import logger
+
+import Snake
 
 LOG_DIR = './snake_train_folder'
 
