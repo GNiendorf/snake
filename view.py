@@ -9,6 +9,13 @@ import matplotlib.animation as animation
 from baselines import logger
 from baselines.ppo2 import ppo2
 from baselines.common.models import build_impala_cnn
+from baselines.common.vec_env import (
+    VecExtractDictObs,
+    VecMonitor,
+    VecFrameStack,
+    VecNormalize,
+    DummyVecEnv,
+)
 
 import Snake
 
@@ -18,7 +25,10 @@ logger.configure(dir=LOG_DIR, format_strs=format_strs)
 #Goes much faster without gpu for some reason...
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
-venv = gym.make('snake-v0')
+def env_fn():
+    return gym.make('snake-v0')
+envs = [env_fn for x in range(64)]
+venv = DummyVecEnv(envs)
 
 config = tf.ConfigProto()
 sess = tf.Session(config=config)
@@ -48,7 +58,7 @@ while done < eps:
     actions, values, states, neglogpacs = final_model.step(obs)
     obs[:], rewards, dones, infos = venv.step(actions)
     done += dones[0]
-    im = plt.imshow(obs.astype(np.uint8), animated=True)
+    im = plt.imshow(obs[0].astype(np.uint8), animated=True)
     frames.append([im])
 
 ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
