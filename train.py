@@ -13,7 +13,8 @@ from baselines.common.vec_env import (
     VecExtractDictObs,
     VecMonitor,
     VecFrameStack,
-    VecNormalize
+    VecNormalize,
+    DummyVecEnv,
 )
 
 import Snake
@@ -25,7 +26,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 learning_rate = 5e-4
 ent_coef = .01
 gamma = .999
-total_time = int(1e6)
+total_time = int(1e7)
 lam = .95
 nsteps = 256
 nminibatches = 8
@@ -37,7 +38,10 @@ format_strs = ['csv', 'stdout']
 logger.configure(dir=LOG_DIR, format_strs=format_strs)
 
 logger.info("creating environment")
-venv = gym.make('snake-v0')
+def env_fn():
+    return gym.make('snake-v0')
+envs = [env_fn for x in range(64)]
+venv = DummyVecEnv(envs)
 
 venv = VecMonitor(
     venv=venv, filename=None, keep_buf=100,
