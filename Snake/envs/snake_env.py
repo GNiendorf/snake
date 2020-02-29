@@ -67,14 +67,8 @@ class SnakeEnv(gym.Env):
                 head_body = True
         border = ((self.snake[0] - [self.size, self.size]) == 0).any()
         border2 = (self.snake[0] < 0).any()
-        if border or border2 or head_body:
+        if border or border2 or head_body or self.l >= 1000:
             self.reset()
-            reward = -1
-            self.R -= 1
-            done = True
-        elif self.l >= 1000:
-            self.reset()
-            reward = 0
             done = True
         #re-draw the frame after action.
         self.update_frame()
