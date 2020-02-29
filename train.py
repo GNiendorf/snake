@@ -1,7 +1,11 @@
 import os.path as osp
+import os
 
 import gym
+import numpy as np
 import tensorflow as tf
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from baselines import logger
 from baselines.ppo2 import ppo2
 from baselines.common.models import build_impala_cnn
@@ -15,10 +19,13 @@ from baselines.common.vec_env import (
 import Snake
 
 LOG_DIR = './snake_train_folder'
+#Goes much faster without gpu for some reason...
+os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 learning_rate = 5e-4
 ent_coef = .01
 gamma = .999
+total_time = int(1e7)
 lam = .95
 nsteps = 256
 nminibatches = 8
@@ -47,7 +54,7 @@ logger.info("training")
 final_model = ppo2.learn(
     env=venv,
     network=conv_fn,
-    total_timesteps=int(1e4),
+    total_timesteps=total_time,
     save_interval=0,
     nsteps=nsteps,
     nminibatches=nminibatches,
@@ -68,24 +75,3 @@ final_model = ppo2.learn(
 
 savepath = osp.join(logger.get_dir(), 'final')
 final_model.save(savepath)
-
-import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.animation as animation
-
-obs = venv.reset()
-frames = []
-fig = plt.figure()
-
-for t in range(500):
-    actions, values, states, neglogpacs = final_model.step(obs)
-    obs[:], rewards, dones, infos = venv.step(actions)
-    im = plt.imshow(obs.astype(np.uint8), animated=True)
-    frames.append([im])
-
-ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
-                                repeat_delay=1000)
-
-ani.save(osp.join(logger.get_dir(), 'dynamic_images.mp4'))
-
-plt.show()
