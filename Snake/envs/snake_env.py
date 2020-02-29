@@ -10,14 +10,25 @@ class SnakeEnv(gym.Env):
         self.size = size
         self.spawn_border = spawn_border
         self.step_dir = [[-1,0],[1,0],[0,1],[0,-1]]
-        head = np.random.randint(spawn_border,size-spawn_border, size=2)
+
+        self.seed()
+        self.action_space = spaces.Discrete(4)
+        self.observation_space = spaces.Box(low=0, high=255, shape=(self.size, self.size), dtype=np.uint8)
+        self.reset_game()
+
+    def reset_game(self):
+        head = np.random.randint(self.spawn_border,self.size-self.spawn_border, size=2)
         body_dir = self.step_dir[np.random.randint(4)]
         self.snake = [head, head+body_dir]
-        self.food = np.random.randint(0, size, size=2)
+        self.food = np.random.randint(0, self.size, size=2)
         #Prevent head from spawning in food.
         while (self.food == head).all():
-            self.food = np.random.randint(0, size, size=2)
-        self.frame = np.zeros((size,size))
+            self.food = np.random.randint(0, self.size, size=2)
+        self.frame = np.zeros((self.size, self.size))
+        
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
         
     def update_frame(self):
         self.frame = np.zeros((self.size,self.size))
@@ -55,12 +66,12 @@ class SnakeEnv(gym.Env):
             self.reset()
             reward = -1
             done = True
-        #re-draw the frame.
+        #re-draw the frame after action.
         self.update_frame()
         return self.frame, reward, done, info
 
     def reset(self):
-        self.__init__(self.size, self.spawn_border)
+        self.reset_game()
         return self.frame
 
     def render(self, mode='human'):
