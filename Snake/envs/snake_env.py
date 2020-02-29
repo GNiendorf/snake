@@ -36,9 +36,12 @@ class SnakeEnv(gym.Env):
         
     def update_frame(self):
         self.frame = np.zeros((self.size,self.size, 3), dtype=np.uint8)
-        for piece in self.snake:
-            self.frame[piece[0], piece[1], 0] = 255
         self.frame[self.food[0], self.food[1], 1] = 255
+        for idx, piece in enumerate(self.snake):
+            if idx == 0:
+                self.frame[piece[0], piece[1], 2] = 255
+            else:
+                self.frame[piece[0], piece[1], 0] = 255
 
     def step(self, action):
         self.l += 1
