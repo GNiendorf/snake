@@ -62,6 +62,8 @@ class SnakeEnv(gym.Env):
             self.snake.pop()
         else:
             self.food = np.random.randint(0, self.size, size=2)
+            while np.any([np.array_equal(x, self.food) for x in self.snake]):
+                self.food = np.random.randint(0, self.size, size=2)
             reward = 1
             self.R += 1
         #Check if head is out of bounds or overlapped with body.
