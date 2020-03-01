@@ -1,7 +1,7 @@
 # snake
 See: https://openai.com/blog/requests-for-research-2/
 
-Solving the classic game of snake with OpenAI baseline's PPO implementation.
+Solving the classic game of snake with OpenAI's PPO baseline.
 
 ![Alt Text](./snake.gif)
 
